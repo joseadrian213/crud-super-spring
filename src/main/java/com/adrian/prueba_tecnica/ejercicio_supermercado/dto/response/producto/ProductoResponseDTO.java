@@ -1,7 +1,7 @@
 package com.adrian.prueba_tecnica.ejercicio_supermercado.dto.response.producto;
 
 import java.math.BigDecimal;
-
+import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,4 +21,6 @@ public class ProductoResponseDTO {
     private BigDecimal precio;
     private Integer cantidad;
     private boolean activo;
+    private LocalDateTime fechaCreacion;
+    private LocalDateTime fechaActualizacion;
 }

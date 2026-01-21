@@ -1,6 +1,5 @@
 package com.adrian.prueba_tecnica.ejercicio_supermercado.dto.request.venta;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import com.adrian.prueba_tecnica.ejercicio_supermercado.enums.EstadoVentaEnum;
@@ -20,9 +19,6 @@ import lombok.ToString;
 @Builder
 @ToString
 public class VentaRequestDTO {
-
-    @NotNull
-    private LocalDate fecha;
 
     @NotNull
     private EstadoVentaEnum estado;

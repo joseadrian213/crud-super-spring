@@ -1,6 +1,8 @@
 package com.adrian.prueba_tecnica.ejercicio_supermercado.dto.response.sucursal;
 
 
+import java.time.LocalDateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,4 +19,6 @@ public class SucursalResponseDTO {
     private String nombre;
     private String direccion;
     private boolean activo;
+    private LocalDateTime fechaCreacion;
+    private LocalDateTime fechaActualizacion;
 }

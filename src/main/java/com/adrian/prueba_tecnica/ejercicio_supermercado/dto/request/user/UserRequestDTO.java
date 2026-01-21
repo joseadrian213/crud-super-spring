@@ -1,5 +1,4 @@
-package com.adrian.prueba_tecnica.ejercicio_supermercado.dto;
-
+package com.adrian.prueba_tecnica.ejercicio_supermercado.dto.request.user;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -14,16 +13,12 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SucursalDTO {
-    private Long id;
-    @NotBlank
-    @NotNull
-    private String nombre;
-    @NotBlank
-    @NotNull
-    private String direccion;
-  
-    @NotNull
-    private boolean activo;
+public class UserRequestDTO {
 
+    @NotNull
+    private String username;
+    @NotBlank
+    private String password;
+    private Boolean admin;
+    private Boolean enabled;
 }

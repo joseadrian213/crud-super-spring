@@ -2,6 +2,7 @@ package com.adrian.prueba_tecnica.ejercicio_supermercado.dto.response.venta;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.adrian.prueba_tecnica.ejercicio_supermercado.enums.EstadoVentaEnum;
@@ -25,7 +26,7 @@ import lombok.ToString;
 public class VentaResponseDTO {
     // Datos de la vetna
     private Long id;
-    
+
     @NotNull
     private LocalDate fecha;
 
@@ -44,4 +45,7 @@ public class VentaResponseDTO {
     @Null
     @Positive
     private BigDecimal total;
+
+    private LocalDateTime fechaCreacion;
+    private LocalDateTime fechaActualizacion;
 }
