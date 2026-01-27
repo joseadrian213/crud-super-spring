@@ -20,12 +20,12 @@ import org.springframework.web.bind.annotation.PathVariable;
  * asociados a transacciones de ventas. Los tickets se generan dinámicamente usando
  * plantillas Thymeleaf y se convierten a PDF mediante OpenHTMLtoPDF.
  * 
- * <p><strong>Rutas de acceso:</strong></p>
- * <ul>
- *   <li>GET /api/ventas/ticket/{id} - Descarga el PDF del ticket de una venta específica
- * </ul>
+ * Rutas de acceso:
  * 
- * <p><strong>Control de acceso:</strong></p>
+ *   GET /api/ventas/ticket/{id} - Descarga el PDF del ticket de una venta específica
+ * 
+ * 
+ * Control de acceso:
  * Los endpoints requieren autenticación de usuario con roles ADMIN o USER.
  * 
  * @author Adrian
@@ -65,11 +65,11 @@ public class TicketController {
      * @param id identificador único de la venta para la cual generar el ticket
      * @return {@link ResponseEntity} con el contenido PDF en formato byte[]
      *         con estado HTTP 200 (OK) y encabezados de PDF configurados:
-     *         <ul>
-     *           <li>Content-Type: application/pdf</li>
-     *           <li>Content-Disposition: inline; filename=ticket-venta-{id}.pdf</li>
-     *           <li>Cache-Control: must-revalidate, post-check=0, pre-check=0</li>
-     *         </ul>
+     *         
+     *           Content-Type: application/pdf
+     *           Content-Disposition: inline; filename=ticket-venta-{id}.pdf
+     *           Cache-Control: must-revalidate, post-check=0, pre-check=0
+     *         
      * @throws NotFoundException si la venta con el ID especificado no existe
      * @throws RuntimeException si ocurre un error durante la generación del PDF
      * 
@@ -77,7 +77,7 @@ public class TicketController {
      */
     @GetMapping("/ticket/{id}")
     public ResponseEntity<byte[]> getTicket(@PathVariable Long id) {
-        byte[] pdfContent = ticketService.generarTicketPDF(id);
+        byte[] pdfContent = ticketService.generateTicketPDF(id);
 
         // Configuración de encabezados HTTP para respuesta PDF
         HttpHeaders headers = new HttpHeaders();

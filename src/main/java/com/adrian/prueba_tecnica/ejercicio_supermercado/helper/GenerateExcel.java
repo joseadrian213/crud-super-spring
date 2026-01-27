@@ -14,8 +14,8 @@ import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import com.adrian.prueba_tecnica.ejercicio_supermercado.dto.response.venta.DetalleVentaResponseDTO;
-import com.adrian.prueba_tecnica.ejercicio_supermercado.dto.response.venta.VentaResponseDTO;
+import com.adrian.prueba_tecnica.ejercicio_supermercado.dto.response.venta.SaleDetailResponseDTO;
+import com.adrian.prueba_tecnica.ejercicio_supermercado.dto.response.venta.SaleResponseDTO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -55,15 +55,15 @@ public class GenerateExcel {
      * Fila 0: Encabezados (Id Venta, Fecha, Estado, Sucursal, Producto, Cant, Precio, Subtotal, Total)
      * Fila 1+: Datos de ventas (una fila por cada detalle de venta)
      * 
-     * @param ventas lista de {@link VentaResponseDTO} con los datos a incluir en el Excel
+     * @param ventas lista de {@link SaleResponseDTO} con los datos a incluir en el Excel
      * @param nombreHoja nombre de la hoja de cálculo a crear en el libro
      * @return array de bytes que contiene el contenido del archivo Excel generado
      * @throws RuntimeException si ocurre un error durante la generación del Excel
      * 
-     * @see VentaResponseDTO
-     * @see DetalleVentaResponseDTO
+     * @see SaleResponseDTO
+     * @see SaleDetailResponseDTO
      */
-    public static byte[] generarExcel(List<VentaResponseDTO> ventas, String nombreHoja) {
+    public static byte[] generarExcel(List<SaleResponseDTO> ventas, String nombreHoja) {
         try (XSSFWorkbook workbook = new XSSFWorkbook();
                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
 
@@ -107,21 +107,21 @@ public class GenerateExcel {
 
             // 3. LLENAR DATOS CON COLORES ALTERNOS
             int rowNum = 1;
-            for (VentaResponseDTO venta : ventas) {
+            for (SaleResponseDTO venta : ventas) {
                 // Crear una fila por cada detalle de venta
-                for (DetalleVentaResponseDTO det : venta.getDetalle()) {
+                for (SaleDetailResponseDTO det : venta.getDetail()) {
                     Row row = sheet.createRow(rowNum++);
                     // Elegir estilo según si la fila es par o impar
                     CellStyle currentStyle = (rowNum % 2 == 0) ? lightGreenStyle : darkerGreenStyle;
 
                     createStyledCell(row, 0, venta.getId().toString(), currentStyle);
-                    createStyledCell(row, 1, venta.getFecha().toString(), currentStyle);
-                    createStyledCell(row, 2, venta.getEstado().name(), currentStyle);
-                    createStyledCell(row, 3, venta.getIdSucursal(), currentStyle);
+                    createStyledCell(row, 1, venta.getDate().toString(), currentStyle);
+                    createStyledCell(row, 2, venta.getStatus().name(), currentStyle);
+                    createStyledCell(row, 3, venta.getIdBranch(), currentStyle);
 
-                    createStyledCell(row, 4, det.getNombreProd(), currentStyle);
-                    createStyledCell(row, 5, det.getCantProd().doubleValue(), currentStyle);
-                    createStyledCell(row, 6, det.getPrecio().doubleValue(), currentStyle);
+                    createStyledCell(row, 4, det.getProductName(), currentStyle);
+                    createStyledCell(row, 5, det.getProductQuantity().doubleValue(), currentStyle);
+                    createStyledCell(row, 6, det.getPrice().doubleValue(), currentStyle);
                     createStyledCell(row, 7, det.getSubtotal().doubleValue(), currentStyle);
 
                     createStyledCell(row, 8, venta.getTotal().doubleValue(), currentStyle);

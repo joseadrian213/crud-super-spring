@@ -16,21 +16,20 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ProductoRequestDTO {
+public class ProductRequestDTO {
   
     @NotNull
     @NotBlank
-    private String nombre;
+    private String name;
     @NotNull
     @NotBlank
-    private String categoria;
-    @NotNull
-
-    @Positive
-    private BigDecimal precio;
+    private String category;
     @NotNull
     @Positive
-    private Integer cantidad;
+    private BigDecimal price;
+    @NotNull
+    @Positive
+    private Integer stock;
     
-    private Boolean activo;
+    private Boolean active;
 }

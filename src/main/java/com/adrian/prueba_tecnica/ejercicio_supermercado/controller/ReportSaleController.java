@@ -3,7 +3,7 @@ package com.adrian.prueba_tecnica.ejercicio_supermercado.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.adrian.prueba_tecnica.ejercicio_supermercado.service.IVentaReporteService;
+import com.adrian.prueba_tecnica.ejercicio_supermercado.service.ISaleReportService;
 
 import java.time.LocalDate;
 
@@ -34,23 +34,23 @@ import org.springframework.web.bind.annotation.PathVariable;
  * 
  * @author Adrian
  * @version 1.0
- * @see IVentaReporteService
+ * @see ISaleReportService
  */
 @RestController
 @RequestMapping("/api/ventas/reporte")
-public class ReporteVentaController {
+public class ReportSaleController {
     /**
      * Servicio para la generación de reportes de ventas en formato Excel.
      */
-    IVentaReporteService ventaReporteService;
+    ISaleReportService saleReportService;
 
     /**
      * Constructor que inyecta el servicio de reportes de ventas.
      * 
-     * @param ventaReporteService servicio para generar reportes de ventas en Excel
+     * @param saleReportService servicio para generar reportes de ventas en Excel
      */
-    public ReporteVentaController(IVentaReporteService ventaReporteService) {
-        this.ventaReporteService = ventaReporteService;
+    public ReportSaleController(ISaleReportService saleReportService) {
+        this.saleReportService = saleReportService;
     }
 
     /**
@@ -65,7 +65,7 @@ public class ReporteVentaController {
      */
     @GetMapping("/excel")
     public ResponseEntity<byte[]> findAll() {
-        byte[] excel = ventaReporteService.obtenerSucursales();
+        byte[] excel = saleReportService.getBranches();
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
@@ -87,7 +87,7 @@ public class ReporteVentaController {
      */
     @GetMapping("/excel/sucursal/{id}")
     public ResponseEntity<byte[]> findReportByIdSucursal(@PathVariable Long id) {
-        byte[] excel = ventaReporteService.generarExcelIdSucursal(id);
+        byte[] excel = saleReportService.generateExcelIdBranch(id);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         headers.setContentDisposition(
@@ -105,17 +105,17 @@ public class ReporteVentaController {
      * Por ejemplo: /api/ventas/reporte/excel/sucursal/1/2024-01-01/2024-12-31
      * 
      * @param id identificador único de la sucursal
-     * @param fechaInicio fecha de inicio del rango (formato: yyyy-MM-dd, inclusive)
-     * @param fechaFin fecha de fin del rango (formato: yyyy-MM-dd, inclusive)
+     * @param startDate fecha de inicio del rango (formato: yyyy-MM-dd, inclusive)
+     * @param endDate fecha de fin del rango (formato: yyyy-MM-dd, inclusive)
      * @return {@link ResponseEntity} con el archivo Excel en bytes,
      *         encabezados apropiados para descarga y estado HTTP 200 (OK)
      * @throws NotFoundException si la sucursal no existe
      */
-    @GetMapping("/excel/sucursal/{id}/{fechaInicio}/{fechaFin}")
+    @GetMapping("/excel/sucursal/{id}/{startDate}/{endDate}")
     public ResponseEntity<byte[]> findReportByIdSucursalBeetwenFecha(@PathVariable Long id,
-            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
-            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin) {
-        byte[] excel = ventaReporteService.generarExcelIdSucursalFecha(id, fechaInicio, fechaFin);
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+        byte[] excel = saleReportService.generateExcelIdBranchDate(id, startDate, endDate);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         headers.setContentDisposition(

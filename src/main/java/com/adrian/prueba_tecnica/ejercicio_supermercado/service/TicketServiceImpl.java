@@ -6,10 +6,10 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
-import com.adrian.prueba_tecnica.ejercicio_supermercado.dto.response.venta.VentaResponseDTO;
+import com.adrian.prueba_tecnica.ejercicio_supermercado.dto.response.venta.SaleResponseDTO;
 import com.adrian.prueba_tecnica.ejercicio_supermercado.exception.NotFoundException;
 import com.adrian.prueba_tecnica.ejercicio_supermercado.mapper.Mapper;
-import com.adrian.prueba_tecnica.ejercicio_supermercado.repository.VentaRepository;
+import com.adrian.prueba_tecnica.ejercicio_supermercado.repository.SaleRepository;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author Adrian
  * @version 1.0
  * @see ITicketService
- * @see VentaRepository
+ * @see SaleRepository
  */
 @Slf4j
 @Service
@@ -46,16 +46,16 @@ public class TicketServiceImpl implements ITicketService {
     /**
      * Repositorio para acceder a la información de ventas en la base de datos.
      */
-    private final VentaRepository ventaRepository;
+    private final SaleRepository saleRepository;
 
     /**
      * Constructor que inyecta las dependencias necesarias.
      * 
-     * @param ventaRepository repositorio para acceder a datos de ventas
+     * @param saleRepository repositorio para acceder a datos de ventas
      * @param templateEngine motor de plantillas Thymeleaf
      */
-    public TicketServiceImpl(VentaRepository ventaRepository, TemplateEngine templateEngine) {
-        this.ventaRepository = ventaRepository;
+    public TicketServiceImpl(SaleRepository saleRepository, TemplateEngine templateEngine) {
+        this.saleRepository = saleRepository;
         this.templateEngine = templateEngine;
     }
 
@@ -77,20 +77,20 @@ public class TicketServiceImpl implements ITicketService {
      * @throws NotFoundException si la venta con el ID especificado no existe
      * @throws RuntimeException si ocurre un error durante la generación del PDF
      * 
-     * @see VentaResponseDTO
+     * @see SaleResponseDTO
      * @see Mapper
      */
     @Override
-    public byte[] generarTicketPDF(Long id) {
+    public byte[] generateTicketPDF(Long id) {
         // 1. Buscamos la venta y convertimos a DTO usando el mapper
-        VentaResponseDTO venta = ventaRepository.findById(id)
+        SaleResponseDTO sale = saleRepository.findById(id)
                 .map(Mapper::toDTO)
                 .orElseThrow(() -> new NotFoundException("No se encontró la venta con ID: " + id));
 
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             // 2. Preparamos el contexto de Thymeleaf que contendrá los datos de la venta
             Context context = new Context();
-            context.setVariable("venta", venta);
+            context.setVariable("sale", sale);
 
             // 3. Renderizamos el HTML desde la plantilla
             // Ubicación: src/main/resources/templates/tickets/ticket-venta.html

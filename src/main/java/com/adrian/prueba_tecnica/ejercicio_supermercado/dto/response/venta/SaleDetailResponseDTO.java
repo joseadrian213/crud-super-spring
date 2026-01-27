@@ -18,13 +18,13 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 @ToString
-public class DetalleVentaResponseDTO {
+public class SaleDetailResponseDTO {
     @JsonIgnore
     private Long id;
-    private String nombreProd;
-    private Integer cantProd;
-    private BigDecimal precio;
+    private String ProductName;
+    private Integer ProductQuantity;
+    private BigDecimal price;
     private BigDecimal subtotal;
-    private Long idProducto;
+    private Long idProduct;
 
 }

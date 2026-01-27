@@ -14,11 +14,11 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SucursalResponseDTO {
+public class BranchResponseDTO {
     private Long id;
-    private String nombre;
-    private String direccion;
-    private boolean activo;
-    private LocalDateTime fechaCreacion;
-    private LocalDateTime fechaActualizacion;
+    private String name;
+    private String address;
+    private boolean active;
+    private LocalDateTime creationDate;
+    private LocalDateTime updateDate;
 }

@@ -13,13 +13,13 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SucursalRequestDTO {
+public class BranchRequestDTO {
     @NotBlank
     @NotNull
-    private String nombre;
+    private String name;
     @NotBlank
     @NotNull
-    private String direccion;
+    private String address;
       
-    private Boolean activo;
+    private Boolean active;
 }

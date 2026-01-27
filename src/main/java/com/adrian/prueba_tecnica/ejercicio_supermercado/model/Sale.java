@@ -45,7 +45,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity
 @Builder
-public class Venta {
+public class Sale {
     /**
      * Identificador único de la venta.
      * Se genera automáticamente usando la estrategia de identidad.
@@ -59,7 +59,7 @@ public class Venta {
      * No puede ser nula.
      */
     @Column(nullable = false)
-    private LocalDate fecha;
+    private LocalDate date;
 
     /**
      * Estado actual de la venta.
@@ -67,7 +67,7 @@ public class Venta {
      */
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 50)
-    private EstadoVentaEnum estado;
+    private EstadoVentaEnum status;
 
     /**
      * Monto total de la venta.
@@ -82,12 +82,12 @@ public class Venta {
      * Relación muchas-a-una: múltiples ventas pueden pertenecer a una sucursal.
      * Este campo es obligatorio y no puede ser nulo.
      * 
-     * @see Sucursal
+     * @see Branch
      */
     // Muchas ventas asociadas a una sucursal
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "sucursal_id", nullable = false)
-    private Sucursal sucursal;
+    @JoinColumn(name = "branch_id", nullable = false)
+    private Branch branch;
 
     /**
      * Lista de detalles de la venta.
@@ -95,47 +95,47 @@ public class Venta {
      * La relación es uno-a-muchos: una venta puede tener múltiples detalles.
      * Los detalles se eliminan en cascada cuando se elimina la venta.
      * 
-     * @see DetalleVenta
+     * @see SaleDetail
      */
-    @OneToMany(mappedBy = "venta", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
     @JsonManagedReference
-    private List<DetalleVenta> detalle = new ArrayList<>();
+    private List<SaleDetail> detail = new ArrayList<>();
 
     /**
      * Fecha y hora en la que se creó el registro de la venta.
      * Se asigna automáticamente mediante {@link #prePersist()} y no puede ser actualizada.
      */
-    @Column(name = "fecha_creacion", updatable = false)
-    private LocalDateTime fechaCreacion;
+    @Column(name = "creation_date", updatable = false)
+    private LocalDateTime creationDate;
 
     /**
      * Fecha y hora de la última actualización del registro de la venta.
      * Se actualiza automáticamente mediante {@link #preUpdate()}.
      */
-    @Column(name = "fecha_actualizacion")
-    private LocalDateTime fechaActualizacion;
+    @Column(name = "update_date")
+    private LocalDateTime updateDate;
 
     /**
      * Método de ciclo de vida que se ejecuta antes de persistir la entidad.
-     * Asigna la fecha y hora actual a {@code fechaCreacion} si no está establecida,
-     * y actualiza {@code fechaActualizacion} con la fecha y hora actual.
+     * Asigna la fecha y hora actual a {@code creationDate} si no está establecida,
+     * y actualiza {@code updateDate} con la fecha y hora actual.
      */
     @PrePersist
     protected void prePersist() {
-        if (this.fechaCreacion == null) {
-            fechaCreacion = LocalDateTime.now();
+        if (this.creationDate == null) {
+            creationDate = LocalDateTime.now();
         }
-        fechaActualizacion = LocalDateTime.now();
+        updateDate = LocalDateTime.now();
     }
 
     /**
      * Método de ciclo de vida que se ejecuta antes de actualizar la entidad.
-     * Actualiza {@code fechaActualizacion} con la fecha y hora actual.
+     * Actualiza {@code updateDate} con la fecha y hora actual.
      */
     @PreUpdate
     protected void preUpdate() {
-        fechaActualizacion = LocalDateTime.now();
+        updateDate = LocalDateTime.now();
     }
 
 }

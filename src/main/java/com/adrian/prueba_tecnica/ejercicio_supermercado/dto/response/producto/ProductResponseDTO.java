@@ -14,13 +14,13 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ProductoResponseDTO {
+public class ProductResponseDTO {
     private Long id;
-    private String nombre;
-    private String categoria;
-    private BigDecimal precio;
-    private Integer cantidad;
-    private boolean activo;
-    private LocalDateTime fechaCreacion;
-    private LocalDateTime fechaActualizacion;
+    private String name;
+    private String category;
+    private BigDecimal price;
+    private Integer stock;
+    private boolean active;
+    private LocalDateTime creationDate;
+    private LocalDateTime updateCreation;
 }

@@ -22,14 +22,14 @@ import org.springframework.web.bind.annotation.RequestBody;
  * Este controlador proporciona endpoints para la administración de usuarios, incluyendo
  * operaciones de consulta (listar, obtener por ID) y registro de nuevos usuarios.
  * 
- * <p><strong>Rutas de acceso:</strong></p>
- * <ul>
- *   <li>GET /api/user - Obtiene la lista de todos los usuarios (ADMIN)
- *   <li>GET /api/user/{id} - Obtiene un usuario específico por su ID (ADMIN)
- *   <li>POST /api/user/register - Registra un nuevo usuario (público)
- * </ul>
+ * Rutas de acceso:
  * 
- * <p><strong>Control de acceso:</strong></p>
+ *   GET /api/user - Obtiene la lista de todos los usuarios (ADMIN)
+ *   GET /api/user/{id} - Obtiene un usuario específico por su ID (ADMIN)
+ *   POST /api/user/register - Registra un nuevo usuario (público)
+ * 
+ * 
+ * Control de acceso:
  * Los endpoints GET requieren rol ADMIN. El endpoint de registro es público,
  * permitiendo a usuarios no autenticados crear nuevas cuentas.
  * 
@@ -101,14 +101,14 @@ public class UserController {
      * Este endpoint es público y no requiere autenticación previa.
      * 
      * El servicio se encarga de:
-     * <ul>
-     *   <li>Validar que los datos del usuario sean correctos
-     *   <li>Verificar que el nombre de usuario no esté en uso
-     *   <li>Codificar la contraseña de forma segura
-     *   <li>Asignar rol ROLE_USER de forma predeterminada
-     *   <li>Opcionalmente asignar ROLE_ADMIN si admin=true en el DTO
-     *   <li>Guardar el nuevo usuario en la base de datos
-     * </ul>
+     * 
+     *   Validar que los datos del usuario sean correctos
+     *   Verificar que el nombre de usuario no esté en uso
+     *   Codificar la contraseña de forma segura
+     *   Asignar rol ROLE_USER de forma predeterminada
+     *   Opcionalmente asignar ROLE_ADMIN si admin=true en el DTO
+     *   Guardar el nuevo usuario en la base de datos
+     * 
      * 
      * @param userRequestDTO objeto {@link UserRequestDTO} con los datos del nuevo usuario
      *                       (username, password, email, admin)

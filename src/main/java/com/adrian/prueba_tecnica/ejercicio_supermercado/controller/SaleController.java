@@ -8,10 +8,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.adrian.prueba_tecnica.ejercicio_supermercado.dto.request.venta.VentaRequestDTO;
-import com.adrian.prueba_tecnica.ejercicio_supermercado.dto.request.venta.VentaUpdateRequestDTO;
-import com.adrian.prueba_tecnica.ejercicio_supermercado.dto.response.venta.VentaResponseDTO;
-import com.adrian.prueba_tecnica.ejercicio_supermercado.service.IVentasService;
+import com.adrian.prueba_tecnica.ejercicio_supermercado.dto.request.venta.SaleRequestDTO;
+import com.adrian.prueba_tecnica.ejercicio_supermercado.dto.request.venta.SaleUpdateRequestDTO;
+import com.adrian.prueba_tecnica.ejercicio_supermercado.dto.response.venta.SaleResponseDTO;
+import com.adrian.prueba_tecnica.ejercicio_supermercado.service.ISaleService;
 
 import jakarta.validation.Valid;
 
@@ -27,57 +27,57 @@ import org.springframework.web.bind.annotation.PathVariable;
  * 
  * Este controlador proporciona endpoints para realizar operaciones CRUD completas
  * sobre ventas, incluyendo:
- * <ul>
- *   <li>Listar todas las ventas con sus detalles
- *   <li>Obtener una venta específica por ID
- *   <li>Crear nuevas ventas (con validación de stock en dos fases)
- *   <li>Actualizar ventas existentes (fecha, estado, sucursal)
- *   <li>Eliminar ventas (eliminación física)
- * </ul>
  * 
- * <p><strong>Rutas de acceso:</strong></p>
- * <ul>
- *   <li>GET /api/ventas - Obtiene la lista de todas las ventas
- *   <li>GET /api/ventas/{id} - Obtiene una venta específica
- *   <li>POST /api/ventas - Crea una nueva venta
- *   <li>PUT /api/ventas/{id} - Actualiza una venta existente
- *   <li>DELETE /api/ventas/{id} - Elimina una venta
- * </ul>
+ *   Listar todas las ventas con sus detalles
+ *   Obtener una venta específica por ID
+ *   Crear nuevas ventas (con validación de stock en dos fases)
+ *   Actualizar ventas existentes (fecha, estado, sucursal)
+ *   Eliminar ventas (eliminación física)
  * 
- * <p><strong>Control de acceso:</strong></p>
+ * 
+ * Rutas de acceso:
+ * 
+ *   GET /api/ventas - Obtiene la lista de todas las ventas
+ *   GET /api/ventas/{id} - Obtiene una venta específica
+ *   POST /api/ventas - Crea una nueva venta
+ *   PUT /api/ventas/{id} - Actualiza una venta existente
+ *   DELETE /api/ventas/{id} - Elimina una venta
+ * 
+ * 
+ * Control de acceso:
  * Los endpoints de GET, POST y PUT requieren autenticación con rol ADMIN o USER.
  * El endpoint DELETE está disponible sin restricción de roles específica.
  * 
- * <p><strong>Procesamiento de ventas:</strong></p>
+ * Procesamiento de ventas:
  * La creación de ventas implementa un proceso de validación en dos fases:
- * <ol>
- *   <li>FASE 1 - VALIDACIÓN: Verifica que todos los productos solicitados tengan stock suficiente
- *   <li>FASE 2 - CREACIÓN: Crea los detalles de venta, decrementa cantidades, calcula totales con IVA
- * </ol>
+ * 
+ *   FASE 1 - VALIDACIÓN: Verifica que todos los productos solicitados tengan stock suficiente
+ *   FASE 2 - CREACIÓN: Crea los detalles de venta, decrementa cantidades, calcula totales con IVA
+ * 
  * El IVA se aplica al 16% (factor 1.16) sobre cada detalle de venta.
  * 
  * @author Adrian
  * @version 1.0
- * @see IVentasService
- * @see VentaResponseDTO
+ * @see ISaleService
+ * @see SaleResponseDTO
  */
 @RestController
 @RequestMapping("/api/ventas")
-public class VentaController {
+public class SaleController {
 
     /**
      * Servicio para la gestión de lógica de negocio de ventas.
      * Se utiliza para operaciones CRUD y procesamiento de transacciones.
      */
-    private IVentasService ventasService;
+    private ISaleService saleService;
 
     /**
      * Constructor que inyecta el servicio de ventas.
      * 
-     * @param ventasService servicio para gestionar la lógica de negocio de ventas
+     * @param saleService servicio para gestionar la lógica de negocio de ventas
      */
-    public VentaController(IVentasService ventasService) {
-        this.ventasService = ventasService;
+    public SaleController(ISaleService saleService) {
+        this.saleService = saleService;
     }
 
     /**
@@ -85,17 +85,17 @@ public class VentaController {
      * 
      * Requiere permisos: ADMIN o USER
      * 
-     * Retorna una lista completa de objetos {@link VentaResponseDTO} con información
+     * Retorna una lista completa de objetos {@link SaleResponseDTO} con información
      * de todas las ventas incluyendo sus detalles (productos, cantidades, precios).
      * Se realiza como consulta de solo lectura optimizando el acceso a la base de datos.
      * 
-     * @return {@link ResponseEntity} con la lista de {@link VentaResponseDTO}
+     * @return {@link ResponseEntity} con la lista de {@link SaleResponseDTO}
      *         con estado HTTP 200 (OK)
      */
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    public ResponseEntity<List<VentaResponseDTO>> getVentas() {
-        return ResponseEntity.ok(ventasService.traerVentas());
+    public ResponseEntity<List<SaleResponseDTO>> findAllSales() {
+        return ResponseEntity.ok(saleService.findAllSales());
     }
 
     /**
@@ -107,16 +107,16 @@ public class VentaController {
      * que forman parte de la transacción, sus cantidades, precios unitarios y subtotales.
      * 
      * @param id identificador único de la venta a obtener
-     * @return {@link ResponseEntity} con el {@link VentaResponseDTO} correspondiente
+     * @return {@link ResponseEntity} con el {@link SaleResponseDTO} correspondiente
      *         con estado HTTP 200 (OK)
      * @throws NotFoundException si la venta con el ID especificado no existe
      * 
-     * @see VentaResponseDTO
+     * @see SaleResponseDTO
      */
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    public ResponseEntity<VentaResponseDTO> getVenta(@PathVariable Long id) {
-        return ResponseEntity.ok(ventasService.getVentaDTO(id));
+    public ResponseEntity<SaleResponseDTO> findByIdSale(@PathVariable Long id) {
+        return ResponseEntity.ok(saleService.findByIdSale(id));
     }
 
     /**
@@ -125,34 +125,34 @@ public class VentaController {
      * Requiere permisos: ADMIN o USER
      * 
      * Implementa un proceso de validación en dos fases:
-     * <ol>
-     *   <li><strong>FASE 1 (VALIDACIÓN):</strong> Verifica que todos los productos tengan stock suficiente.
+     * 
+     *   FASE 1 (VALI/strong> Verifica que todos los productos tengan stock suficiente.
      *        Si algún producto no tiene suficiente cantidad, lanza excepción y no se crea la venta.
-     *   <li><strong>FASE 2 (CREACIÓN):</strong> Si la validación pasa, crea los detalles de venta,
+     *   FASE 2 (CREAtrong> Si la validación pasa, crea los detalles de venta,
      *        decrementa las cantidades en inventario, calcula subtotales y aplica IVA (factor 1.16).
-     * </ol>
+     * 
      * 
      * El total de la venta se calcula sumando todos los subtotales de detalles con IVA aplicado.
      * 
      * Si la creación es exitosa, retorna la ubicación del nuevo recurso
      * en el encabezado "Location".
      * 
-     * @param ventaDTO objeto {@link VentaRequestDTO} con los datos de la venta a crear
+     * @param saleDTO objeto {@link SaleRequestDTO} con los datos de la venta a crear
      *                 (sucursalId, lista de productos con cantidades)
-     * @return {@link ResponseEntity} con el {@link VentaResponseDTO} creado
+     * @return {@link ResponseEntity} con el {@link SaleResponseDTO} creado
      *         con estado HTTP 201 (Created) y encabezado Location
      * @throws IllegalArgumentException si los datos de la venta son inválidos
      * @throws NotFoundException si la sucursal o algún producto no existen
      * @throws RuntimeException si algún producto no tiene stock suficiente
      * 
-     * @see VentaRequestDTO
-     * @see VentaResponseDTO
-     * @see IVentasService#crearVenta(VentaRequestDTO)
+     * @see SaleRequestDTO
+     * @see SaleResponseDTO
+     * @see ISaleService#crearVenta(SaleRequestDTO)
      */
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    public ResponseEntity<?> create(@Valid @RequestBody VentaRequestDTO ventaDTO) {
-        VentaResponseDTO created = ventasService.crearVenta(ventaDTO);
+    public ResponseEntity<?> create(@Valid @RequestBody SaleRequestDTO saleDTO) {
+        SaleResponseDTO created = saleService.createSale(saleDTO);
         return ResponseEntity.created(URI.create("/api/ventas/" + created.getId())).body(created);
     }
 
@@ -162,34 +162,34 @@ public class VentaController {
      * Requiere permisos: ADMIN o USER
      * 
      * Permite actualizar los siguientes campos de una venta:
-     * <ul>
-     *   <li>Fecha de la venta
-     *   <li>Estado de la venta (PENDIENTE, PAGADA, CANCELADA)
-     *   <li>Sucursal asociada
-     *   <li>Total de la venta
-     * </ul>
+     * 
+     *   Fecha de la venta
+     *   Estado de la venta (PENDIENTE, PAGADA, CANCELADA)
+     *   Sucursal asociada
+     *   Total de la venta
+     * 
      * 
      * Solo actualiza los campos proporcionados en el DTO. Los campos no especificados
      * (null) no se modifican, permitiendo actualizaciones parciales.
      * 
-     * <strong>Nota:</strong> Los detalles de la venta (productos) no se pueden actualizar
+     * Nota:</strontalles de la venta (productos) no se pueden actualizar
      * directamente a través de este endpoint. Para cambiar los productos, debe eliminar
      * y crear una nueva venta.
      * 
      * @param id identificador único de la venta a actualizar
-     * @param ventaDTO objeto {@link VentaUpdateRequestDTO} con los datos a actualizar
-     * @return {@link ResponseEntity} con el {@link VentaResponseDTO} actualizado
+     * @param saleDTO objeto {@link SaleUpdateRequestDTO} con los datos a actualizar
+     * @return {@link ResponseEntity} con el {@link SaleResponseDTO} actualizado
      *         con estado HTTP 200 (OK)
      * @throws NotFoundException si la venta no existe
      * 
-     * @see VentaUpdateRequestDTO
-     * @see VentaResponseDTO
-     * @see IVentasService#actualizarVenta(Long, VentaUpdateRequestDTO)
+     * @see SaleUpdateRequestDTO
+     * @see SaleResponseDTO
+     * @see ISaleService#actualizarVenta(Long, SaleUpdateRequestDTO)
      */
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    public ResponseEntity<?> actualizar(@PathVariable Long id, @Valid @RequestBody VentaUpdateRequestDTO ventaDTO) {
-        return ResponseEntity.ok(ventasService.actualizarVenta(id, ventaDTO));
+    public ResponseEntity<?> updateSale(@PathVariable Long id, @Valid @RequestBody SaleUpdateRequestDTO saleDTO) {
+        return ResponseEntity.ok(saleService.updateSale(id, saleDTO));
     }
 
     /**
@@ -198,7 +198,7 @@ public class VentaController {
      * Esta operación realiza una eliminación física: elimina completamente la venta
      * de la base de datos, incluyendo todos sus detalles de venta.
      * 
-     * <strong>Advertencia:</strong> La eliminación de una venta NO restaura el inventario
+     * Advertencia: La eliminación de una venta NO restaura el inventario
      * de los productos. Las cantidades decrementadas durante la creación de la venta
      * no serán devueltas al stock de productos.
      * 
@@ -206,11 +206,11 @@ public class VentaController {
      * @return {@link ResponseEntity} sin contenido con estado HTTP 204 (No Content)
      * @throws NotFoundException si la venta no existe
      * 
-     * @see IVentasService#eliminarVenta(Long)
+     * @see ISaleService#eliminarVenta(Long)
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        ventasService.eliminarVenta(id);
+    public ResponseEntity<Void> deleteSale(@PathVariable Long id) {
+        saleService.deleteSale(id);
         return ResponseEntity.noContent().build();
     }
 

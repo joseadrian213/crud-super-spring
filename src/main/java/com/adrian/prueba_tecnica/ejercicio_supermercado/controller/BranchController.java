@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.adrian.prueba_tecnica.ejercicio_supermercado.dto.request.sucursal.SucursalRequestDTO;
-import com.adrian.prueba_tecnica.ejercicio_supermercado.dto.response.sucursal.SucursalResponseDTO;
-import com.adrian.prueba_tecnica.ejercicio_supermercado.service.ISucursalService;
+import com.adrian.prueba_tecnica.ejercicio_supermercado.dto.request.sucursal.BranchRequestDTO;
+import com.adrian.prueba_tecnica.ejercicio_supermercado.dto.response.sucursal.BranchResponseDTO;
+import com.adrian.prueba_tecnica.ejercicio_supermercado.service.IBranchService;
 
 import jakarta.validation.Valid;
 
@@ -40,24 +40,24 @@ import org.springframework.web.bind.annotation.PathVariable;
  * 
  * @author Adrian
  * @version 1.0
- * @see ISucursalService
+ * @see IBranchService
  */
 @RestController
 @RequestMapping("/api/sucursales")
-public class SucursalController {
+public class BranchController {
 
     /**
      * Servicio para la gestión de lógica de negocio de sucursales.
      */
-    ISucursalService sucursalService;
+    IBranchService branchService;
 
     /**
      * Constructor que inyecta el servicio de sucursales.
      * 
-     * @param sucursalService servicio para gestionar la lógica de negocio de sucursales
+     * @param branchService servicio para gestionar la lógica de negocio de sucursales
      */
-    public SucursalController(ISucursalService sucursalService) {
-        this.sucursalService = sucursalService;
+    public BranchController(IBranchService branchService) {
+        this.branchService = branchService;
     }
 
     /**
@@ -65,13 +65,13 @@ public class SucursalController {
      * 
      * Requiere permisos: ADMIN o USER
      * 
-     * @return {@link ResponseEntity} con la lista de {@link SucursalResponseDTO}
+     * @return {@link ResponseEntity} con la lista de {@link BranchResponseDTO}
      *         con estado HTTP 200 (OK)
      */
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    public ResponseEntity<List<SucursalResponseDTO>> getSucursales() {
-        return ResponseEntity.ok(sucursalService.traerSucursales());
+    public ResponseEntity<List<BranchResponseDTO>> findAllBranches() {
+        return ResponseEntity.ok(branchService.findAllBranches());
     }
 
     /**
@@ -80,14 +80,14 @@ public class SucursalController {
      * Requiere permisos: ADMIN o USER
      * 
      * @param id identificador único de la sucursal a obtener
-     * @return {@link ResponseEntity} con el {@link SucursalResponseDTO}
+     * @return {@link ResponseEntity} con el {@link BranchResponseDTO}
      *         con estado HTTP 200 (OK)
      * @throws NotFoundException si la sucursal no existe
      */
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    public ResponseEntity<SucursalResponseDTO> getSucursal(@PathVariable Long id) {
-        return ResponseEntity.ok(sucursalService.geSucursalDTO(id));
+    public ResponseEntity<BranchResponseDTO> findByIdBranch(@PathVariable Long id) {
+        return ResponseEntity.ok(branchService.findByIdBranch(id));
     }
 
     /**
@@ -99,17 +99,17 @@ public class SucursalController {
      * Si la creación es exitosa, retorna la ubicación del nuevo recurso
      * en el encabezado "Location".
      * 
-     * @param sucursalDTO objeto {@link SucursalRequestDTO} con los datos de la sucursal a crear
-     * @return {@link ResponseEntity} con el {@link SucursalResponseDTO} creado
+     * @param branchDTO objeto {@link BranchRequestDTO} con los datos de la sucursal a crear
+     * @return {@link ResponseEntity} con el {@link BranchResponseDTO} creado
      *         con estado HTTP 201 (Created) y encabezado Location
      * @throws IllegalArgumentException si los datos de la sucursal son inválidos
      * 
-     * @see SucursalRequestDTO
+     * @see BranchRequestDTO
      */
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> create(@Valid @RequestBody SucursalRequestDTO sucursalDTO) {
-        SucursalResponseDTO created = sucursalService.crearSucursal(sucursalDTO);
+    public ResponseEntity<?> create(@Valid @RequestBody BranchRequestDTO branchDTO) {
+        BranchResponseDTO created = branchService.createBranch(branchDTO);
         return ResponseEntity.created(URI.create("/api/sucursales/" + created.getId())).body(created);
     }
 
@@ -122,17 +122,17 @@ public class SucursalController {
      * Solo actualiza los campos proporcionados en el DTO.
      * 
      * @param id identificador único de la sucursal a actualizar
-     * @param sucursalDTO objeto {@link SucursalRequestDTO} con los datos a actualizar
-     * @return {@link ResponseEntity} con el {@link SucursalResponseDTO} actualizado
+     * @param branchDTO objeto {@link BranchRequestDTO} con los datos a actualizar
+     * @return {@link ResponseEntity} con el {@link BranchResponseDTO} actualizado
      *         con estado HTTP 200 (OK)
      * @throws NotFoundException si la sucursal no existe
      * 
-     * @see SucursalRequestDTO
+     * @see BranchRequestDTO
      */
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> update(@PathVariable Long id, @Valid @RequestBody SucursalRequestDTO sucursalDTO) {
-        return ResponseEntity.ok(sucursalService.actualizarSucursal(id, sucursalDTO));
+    public ResponseEntity<?> update(@PathVariable Long id, @Valid @RequestBody BranchRequestDTO branchDTO) {
+        return ResponseEntity.ok(branchService.updateBranch(id, branchDTO));
 
     }
 
@@ -151,7 +151,7 @@ public class SucursalController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        sucursalService.eliminarSucursal(id);
+        branchService.deleteBranch(id);
         return ResponseEntity.noContent().build();
     }
 

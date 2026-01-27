@@ -8,9 +8,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.adrian.prueba_tecnica.ejercicio_supermercado.dto.request.producto.ProductoRequestDTO;
-import com.adrian.prueba_tecnica.ejercicio_supermercado.dto.response.producto.ProductoResponseDTO;
-import com.adrian.prueba_tecnica.ejercicio_supermercado.service.IProductoService;
+import com.adrian.prueba_tecnica.ejercicio_supermercado.dto.request.producto.ProductRequestDTO;
+import com.adrian.prueba_tecnica.ejercicio_supermercado.dto.response.producto.ProductResponseDTO;
+import com.adrian.prueba_tecnica.ejercicio_supermercado.service.IProductService;
 
 import jakarta.validation.Valid;
 
@@ -24,8 +24,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 /**
  * Controlador REST para la gestión de productos.
  * 
- * Proporciona endpoints para las operaciones CRUD (Create, Read, Update, Delete)
- * sobre productos. Implementa control de acceso basado en roles usando Spring Security.
+ * Proporciona endpoints para las operaciones CRUD (Create, Read, Update,
+ * Delete)
+ * sobre productos. Implementa control de acceso basado en roles usando Spring
+ * Security.
  * 
  * Endpoints disponibles:
  * - GET /api/productos - Obtiene lista de todos los productos
@@ -40,24 +42,25 @@ import org.springframework.web.bind.annotation.PathVariable;
  * 
  * @author Adrian
  * @version 1.0
- * @see IProductoService
+ * @see IProductService
  */
 @RestController
 @RequestMapping("/api/productos")
-public class ProductoController {
+public class ProductController {
 
     /**
      * Servicio para la gestión de lógica de negocio de productos.
      */
-    private IProductoService productoService;
+    private IProductService productService;
 
     /**
      * Constructor que inyecta el servicio de productos.
      * 
-     * @param productoService servicio para gestionar la lógica de negocio de productos
+     * @param productService servicio para gestionar la lógica de negocio de
+     *                        productos
      */
-    public ProductoController(IProductoService productoService) {
-        this.productoService = productoService;
+    public ProductController(IProductService productService) {
+        this.productService = productService;
     }
 
     /**
@@ -65,13 +68,13 @@ public class ProductoController {
      * 
      * Requiere permisos: ADMIN o USER
      * 
-     * @return {@link ResponseEntity} con la lista de {@link ProductoResponseDTO}
+     * @return {@link ResponseEntity} con la lista de {@link ProductResponseDTO}
      *         con estado HTTP 200 (OK)
      */
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    public ResponseEntity<List<ProductoResponseDTO>> getProductos() {
-        return ResponseEntity.ok(productoService.traerProductos());
+    public ResponseEntity<List<ProductResponseDTO>> findAllProducts() {
+        return ResponseEntity.ok(productService.findAllProducts());
     }
 
     /**
@@ -80,14 +83,14 @@ public class ProductoController {
      * Requiere permisos: ADMIN o USER
      * 
      * @param id identificador único del producto a obtener
-     * @return {@link ResponseEntity} con el {@link ProductoResponseDTO}
+     * @return {@link ResponseEntity} con el {@link ProductResponseDTO}
      *         con estado HTTP 200 (OK)
      * @throws NotFoundException si el producto no existe
      */
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    public ResponseEntity<ProductoResponseDTO> getProducto(@PathVariable Long id) {
-        return ResponseEntity.ok(productoService.getProductoDTO(id));
+    public ResponseEntity<ProductResponseDTO> findByIdProduct(@PathVariable Long id) {
+        return ResponseEntity.ok(productService.findByIdProduct(id));
 
     }
 
@@ -100,25 +103,26 @@ public class ProductoController {
      * Si la creación es exitosa, retorna la ubicación del nuevo recurso
      * en el encabezado "Location".
      * 
-     * @param productoDTO objeto {@link ProductoRequestDTO} con los datos del producto a crear
-     * @return {@link ResponseEntity} con el {@link ProductoResponseDTO} creado
+     * @param productDTO objeto {@link ProductRequestDTO} con los datos del
+     *                    producto a crear
+     * @return {@link ResponseEntity} con el {@link ProductResponseDTO} creado
      *         con estado HTTP 201 (Created) y encabezado Location
      * @throws IllegalArgumentException si los datos del producto son inválidos
      * 
-     * @see ProductoRequestDTO
+     * @see ProductRequestDTO
      */
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> crearProducto(@Valid @RequestBody ProductoRequestDTO productoDTO) {
+    public ResponseEntity<?> createProduct(@Valid @RequestBody ProductRequestDTO productDTO) {
         /*
          * El siguiente código se reemplaza por un método global para evitar repetir en
          * todos los controllers y quitar el parámetro BindingResult result
          * 
          * if (result.hasFieldErrors())
-         *     return Validation.validation(result);
+         * return Validation.validation(result);
          */
-        ProductoResponseDTO creado = productoService.creaProducto(productoDTO);
-        return ResponseEntity.created(URI.create("/api/productos/" + creado.getId())).body(creado);
+        ProductResponseDTO created = productService.createProduct(productDTO);
+        return ResponseEntity.created(URI.create("/api/productos/" + created.getId())).body(created);
     }
 
     /**
@@ -129,19 +133,20 @@ public class ProductoController {
      * Valida los datos del producto usando anotaciones @Valid.
      * Solo actualiza los campos proporcionados en el DTO.
      * 
-     * @param id identificador único del producto a actualizar
-     * @param productoDTO objeto {@link ProductoRequestDTO} con los datos a actualizar
-     * @return {@link ResponseEntity} con el {@link ProductoResponseDTO} actualizado
+     * @param id          identificador único del producto a actualizar
+     * @param productDTO objeto {@link ProductRequestDTO} con los datos a
+     *                    actualizar
+     * @return {@link ResponseEntity} con el {@link ProductResponseDTO} actualizado
      *         con estado HTTP 200 (OK)
      * @throws NotFoundException si el producto no existe
      * 
-     * @see ProductoRequestDTO
+     * @see ProductRequestDTO
      */
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> actualizarProducto(@PathVariable Long id,
-            @Valid @RequestBody ProductoRequestDTO productoDTO) {
-        return ResponseEntity.ok(productoService.actualizarProducto(id, productoDTO));
+    public ResponseEntity<?> updateProduct(@PathVariable Long id,
+            @Valid @RequestBody ProductRequestDTO productDTO) {
+        return ResponseEntity.ok(productService.updateProduct(id, productDTO));
     }
 
     /**
@@ -149,7 +154,8 @@ public class ProductoController {
      * 
      * Requiere permisos: ADMIN
      * 
-     * Esta operación realiza una eliminación lógica: marca el producto como inactivo
+     * Esta operación realiza una eliminación lógica: marca el producto como
+     * inactivo
      * en lugar de borrarlo físicamente de la base de datos.
      * 
      * @param id identificador único del producto a eliminar
@@ -158,8 +164,8 @@ public class ProductoController {
      */
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> borrarProducto(@PathVariable Long id) {
-        productoService.eliminarProducto(id);
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
+        productService.deleteProduct(id);
         return ResponseEntity.noContent().build();
 
     }

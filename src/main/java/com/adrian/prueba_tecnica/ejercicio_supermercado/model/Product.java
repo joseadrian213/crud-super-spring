@@ -35,7 +35,7 @@ import lombok.Setter;
 @Builder
 @Entity
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
-public class Producto {
+public class Product {
     /**
      * Identificador único del producto.
      * Se genera automáticamente usando la estrategia de identidad.
@@ -50,7 +50,7 @@ public class Producto {
      * Máximo 150 caracteres. No puede ser nulo.
      */
     @Column(nullable = false, length = 150)
-    private String nombre;
+    private String name;
 
     /**
      * Categoría del producto.
@@ -58,7 +58,7 @@ public class Producto {
      * Máximo 150 caracteres. No puede ser nulo.
      */
     @Column(nullable = false, length = 150)
-    private String categoria;
+    private String category;
 
     /**
      * Precio unitario del producto.
@@ -66,7 +66,7 @@ public class Producto {
      * No puede ser nulo.
      */
     @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal precio;
+    private BigDecimal price;
 
     /**
      * Cantidad disponible del producto en stock.
@@ -74,48 +74,48 @@ public class Producto {
      * No puede ser nulo.
      */
     @Column(nullable = false)
-    private Integer cantidad;
+    private Integer stock;
 
     /**
      * Indica si el producto está activo en el catálogo.
      * Un producto inactivo no puede ser vendido.
      */
     @Column(nullable = false)
-    private boolean activo;
+    private boolean active;
 
     /**
      * Fecha y hora en la que se creó el registro del producto.
      * Se asigna automáticamente mediante {@link #prePersist()} y no puede ser actualizada.
      */
-    @Column(name = "fecha_creacion", updatable = false)
-    private LocalDateTime fechaCreacion;
+    @Column(name = "creation_date", updatable = false)
+    private LocalDateTime creationDate;
 
     /**
      * Fecha y hora de la última actualización del registro del producto.
      * Se actualiza automáticamente mediante {@link #preUpdate()}.
      */
-    @Column(name = "fecha_actualizacion")
-    private LocalDateTime fechaActualizacion;
+    @Column(name = "update_date")
+    private LocalDateTime updateDate;
 
     /**
      * Método de ciclo de vida que se ejecuta antes de persistir la entidad.
      * Asigna la fecha y hora actual a {@code fechaCreacion} si no está establecida,
-     * y actualiza {@code fechaActualizacion} con la fecha y hora actual.
+     * y actualiza {@code updateDate} con la fecha y hora actual.
      */
     @PrePersist
     protected void prePersist() {
-        if (this.fechaCreacion == null) {
-            fechaCreacion = LocalDateTime.now();
+        if (this.creationDate == null) {
+            creationDate = LocalDateTime.now();
         }
-        fechaActualizacion = LocalDateTime.now();
+        updateDate = LocalDateTime.now();
     }
 
     /**
      * Método de ciclo de vida que se ejecuta antes de actualizar la entidad.
-     * Actualiza {@code fechaActualizacion} con la fecha y hora actual.
+     * Actualiza {@code updateDate} con la fecha y hora actual.
      */
     @PreUpdate
     protected void preUpdate() {
-        fechaActualizacion = LocalDateTime.now();
+        updateDate = LocalDateTime.now();
     }
 }

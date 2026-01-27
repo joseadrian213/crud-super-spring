@@ -28,41 +28,41 @@ import com.adrian.prueba_tecnica.ejercicio_supermercado.security.filter.JwtValid
  * Clase de configuración centralizada para Spring Security.
  * 
  * Define toda la configuración de seguridad de la aplicación, incluyendo:
- * <ul>
- *   <li>Cadena de filtros de seguridad HTTP
- *   <li>Reglas de autorización para endpoints
- *   <li>Autenticación JWT con filtros personalizados
- *   <li>Cifrado de contraseñas
- *   <li>Configuración CORS para solicitudes cross-origin
- *   <li>Deshabilitación de sesiones (stateless)
- *   <li>Protección contra CSRF
- * </ul>
  * 
- * <p><strong>Autenticación:</strong></p>
- * <ul>
- *   <li>Mecanismo: JWT (JSON Web Tokens)
- *   <li>Generación: {@link JwtAuthenticationFilter} en endpoint de login
- *   <li>Validación: {@link JwtValidationFilter} en cada petición
- *   <li>Duración: 1 hora
- *   <li>Almacenamiento: Encabezado Authorization con prefijo "Bearer"
- * </ul>
+ *   Cadena de filtros de seguridad HTTP
+ *   Reglas de autorización para endpoints
+ *   Autenticación JWT con filtros personalizados
+ *   Cifrado de contraseñas
+ *   Configuración CORS para solicitudes cross-origin
+ *   Deshabilitación de sesiones (stateless)
+ *   Protección contra CSRF
  * 
- * <p><strong>Autorización:</strong></p>
- * <ul>
- *   <li>Endpoints públicos: Login, registro, tickets, reportes
- *   <li>Endpoints protegidos: CRUD de productos, sucursales, ventas
- *   <li>Control de acceso: @PreAuthorize en métodos de controllers
- * </ul>
  * 
- * <p><strong>CORS:</strong></p>
- * <ul>
- *   <li>Orígenes permitidos: Todos (*)
- *   <li>Métodos HTTP: GET, POST, PUT, DELETE
- *   <li>Encabezados: Authorization, Content-Type
- *   <li>Credenciales: Habilitadas
- * </ul>
+ * Autenticación:
  * 
- * <p><strong>Sesiones:</strong></p>
+ *   Mecanismo: JWT (JSON Web Tokens)
+ *   Generación: {@link JwtAuthenticationFilter} en endpoint de login
+ *   Validación: {@link JwtValidationFilter} en cada petición
+ *   Duración: 1 hora
+ *   Almacenamiento: Encabezado Authorization con prefijo "Bearer"
+ * 
+ * 
+ * Autorización:
+ * 
+ *   Endpoints públicos: Login, registro, tickets, reportes
+ *   Endpoints protegidos: CRUD de productos, sucursales, ventas
+ *   Control de acceso: @PreAuthorize en métodos de controllers
+ * 
+ * 
+ * CORS:
+ * 
+ *   Orígenes permitidos: Todos (*)
+ *   Métodos HTTP: GET, POST, PUT, DELETE
+ *   Encabezados: Authorization, Content-Type
+ *   Credenciales: Habilitadas
+ * 
+ * 
+ * Sesiones:
  * Deshabilitadas (STATELESS) para implementar un patrón de autenticación sin estado
  * basado únicamente en tokens JWT.
  * 
@@ -89,11 +89,11 @@ public class SpringSecurityConfig {
      * Expone el AuthenticationManager como bean de Spring.
      * 
      * El AuthenticationManager es necesario para:
-     * <ul>
-     *   <li>Validar credenciales de usuario en {@link JwtAuthenticationFilter}
-     *   <li>Verificar password contra la base de datos
-     *   <li>Cargar roles y autoridades del usuario
-     * </ul>
+     * 
+     *   Validar credenciales de usuario en {@link JwtAuthenticationFilter}
+     *   Verificar password contra la base de datos
+     *   Cargar roles y autoridades del usuario
+     * 
      * 
      * @return {@link AuthenticationManager} proporcionado por la configuración de autenticación
      * @throws Exception si ocurre error al obtener el AuthenticationManager
@@ -112,12 +112,12 @@ public class SpringSecurityConfig {
      * utilizando el algoritmo BCrypt, que es adaptativo e iterativo, haciendo
      * que sea computacionalmente costoso descifrar contraseñas.
      * 
-     * <p><strong>Proceso:</strong></p>
-     * <ul>
-     *   <li>Al registrar usuario: password se codifica con BCrypt antes de guardarse
-     *   <li>Al hacer login: password ingresado se compara con hash almacenado
-     *   <li>No se descodifica: es una comparación de hashes
-     * </ul>
+     * Proceso:
+     * 
+     *   Al registrar usuario: password se codifica con BCrypt antes de guardarse
+     *   Al hacer login: password ingresado se compara con hash almacenado
+     *   No se descodifica: es una comparación de hashes
+     * 
      * 
      * @return {@link BCryptPasswordEncoder} configurado para codificar contraseñas
      */
@@ -131,28 +131,28 @@ public class SpringSecurityConfig {
      * Define la cadena de filtros HTTP y las reglas de seguridad de la aplicación.
      * 
      * Configura:
-     * <ol>
-     *   <li><strong>Autorización de endpoints:</strong>
-     *       <ul>
-     *         <li>GET /api/user - Público (listar usuarios sin autenticación)
-     *         <li>POST /api/user/register - Público (registrarse sin autenticación)
-     *         <li>GET /api/ventas/ticket/* - Público (descargar tickets PDF)
-     *         <li>GET /api/ventas/reporte/excel - Público (descargar reportes)
-     *         <li>GET /api/ventas/reporte/excel/sucursal/** - Público (descargar reportes por sucursal)
-     *         <li>Cualquier otra petición - Requiere autenticación
-     *       </ul>
-     *   <li><strong>Filtros JWT:</strong>
-     *       <ul>
-     *         <li>{@link JwtAuthenticationFilter} - Genera token al hacer login
-     *         <li>{@link JwtValidationFilter} - Valida token en cada petición
-     *       </ul>
-     *   <li><strong>Protecciones:</strong>
-     *       <ul>
-     *         <li>CSRF: Deshabilitado (no necesario en APIs REST stateless)
-     *         <li>CORS: Habilitado con configuración personalizada
-     *         <li>Sesiones: Deshabilitadas (STATELESS)
-     *       </ul>
-     * </ol>
+     * 
+     *   Autorización de endpoints:
+     *       
+     *         GET /api/user - Público (listar usuarios sin autenticación)
+     *         POST /api/user/register - Público (registrarse sin autenticación)
+     *         GET /api/ventas/ticket/* - Público (descargar tickets PDF)
+     *         GET /api/ventas/reporte/excel - Público (descargar reportes)
+     *         GET /api/ventas/reporte/excel/sucursal/** - Público (descargar reportes por sucursal)
+     *         Cualquier otra petición - Requiere autenticación
+     *       
+     *   Filtros JWT:
+     *       
+     *         {@link JwtAuthenticationFilter} - Genera token al hacer login
+     *         {@link JwtValidationFilter} - Valida token en cada petición
+     *       
+     *   Protecciones:
+     *       
+     *         CSRF: Deshabilitado (no necesario en APIs REST stateless)
+     *         CORS: Habilitado con configuración personalizada
+     *         Sesiones: Deshabilitadas (STATELESS)
+     *       
+     * 
      * 
      * @param httpSecurity configuración HTTP de Spring Security
      * @return {@link SecurityFilterChain} cadena de filtros configurada
@@ -185,19 +185,19 @@ public class SpringSecurityConfig {
      * CORS permite que navegadores y clientes JavaScript hagan peticiones
      * a orígenes diferentes al de la aplicación, bajo condiciones específicas.
      * 
-     * <p><strong>Configuración:</strong></p>
-     * <ul>
-     *   <li><strong>Orígenes permitidos:</strong> Todos (*) - en producción ser más restrictivo
-     *   <li><strong>Métodos HTTP permitidos:</strong> GET, POST, PUT, DELETE
-     *   <li><strong>Encabezados permitidos:</strong> Authorization (para tokens JWT), Content-Type
-     *   <li><strong>Credenciales:</strong> Habilitadas (permite envío de cookies si fuera necesario)
-     * </ul>
+     * Configuración:
      * 
-     * <p><strong>Nota de seguridad:</strong></p>
+     *   Orígenes permitidos: Todos (*) - en producción ser más restrictivo
+     *   Métodos HTTP permitidos: GET, POST, PUT, DELETE
+     *   Encabezados permitidos: Authorization (para tokens JWT), Content-Type
+     *   Credenciales: Habilitadas (permite envío de cookies si fuera necesario)
+     * 
+     * 
+     * Nota de seguridad:
      * En producción, se recomienda reemplazar "*" con orígenes específicos permitidos:
-     * <pre>
+     * 
      * config.setAllowedOrigins(Arrays.asList("https://miapp.com", "https://www.miapp.com"));
-     * </pre>
+     * 
      * 
      * @return {@link CorsConfigurationSource} con configuración de CORS para toda la aplicación
      */
@@ -224,7 +224,7 @@ public class SpringSecurityConfig {
      * El filtro CORS debe ejecutarse antes que los filtros de Spring Security
      * para evitar conflictos en el procesamiento de peticiones CORS preflight (OPTIONS).
      * 
-     * <p><strong>Prioridad:</strong> HIGHEST_PRECEDENCE asegura que se ejecute primero.</p>
+     * Prioridad: HIGHEST_PRECEDENCE asegura que se ejecute primero.</p>
      * 
      * @return {@link FilterRegistrationBean} configurando el CorsFilter con máxima prioridad
      */

@@ -33,8 +33,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "detalle_venta")
-public class DetalleVenta {
+@Table(name = "sale_detail")
+public class SaleDetail {
 
     /**
      * Identificador único del detalle de venta.
@@ -49,31 +49,31 @@ public class DetalleVenta {
      * Relación muchos-a-uno: múltiples detalles pertenecen a una venta.
      * Este campo es obligatorio y no puede ser nulo.
      * 
-     * @see Venta
+     * @see Sale
      */
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "venta_id", nullable = false)
+    @JoinColumn(name = "sale_id", nullable = false)
     @JsonBackReference
-    private Venta venta;
+    private Sale sale;
 
     /**
      * Producto que fue vendido en este detalle.
      * Relación muchos-a-uno: múltiples detalles pueden referirse al mismo producto.
      * Este campo es obligatorio y no puede ser nulo.
      * 
-     * @see Producto
+     * @see Product
      */
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "producto_id", nullable = false)
-    private Producto producto;
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
 
     /**
      * Cantidad de unidades vendidas del producto.
      * Número entero que representa cuántas unidades se vendieron.
      * No puede ser nulo.
      */
-    @Column(name = "cantidad_producto", nullable = false)
-    private Integer cantProd;
+    @Column(name = "quantity_product", nullable = false)
+    private Integer productQuantity;
 
     /**
      * Precio unitario del producto en el momento de la venta.
@@ -81,7 +81,7 @@ public class DetalleVenta {
      * No puede ser nulo.
      */
     @Column(precision = 10, scale = 2, nullable = false)
-    private BigDecimal precio;
+    private BigDecimal price;
 
     /**
      * Subtotal de esta línea de venta (cantidad × precio unitario).

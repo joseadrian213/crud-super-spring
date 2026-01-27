@@ -23,29 +23,29 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 @ToString
-public class VentaResponseDTO {
+public class SaleResponseDTO {
     // Datos de la vetna
     private Long id;
 
     @NotNull
-    private LocalDate fecha;
+    private LocalDate date;
 
     @NotNull
-    private EstadoVentaEnum estado;
+    private EstadoVentaEnum status;
 
     // Datos de la sucursal
     @NotNull
-    private Long idSucursal;
+    private Long idBranch;
 
     // lista de detalles de la venta
     @NotNull
-    private List<DetalleVentaResponseDTO> detalle;
+    private List<SaleDetailResponseDTO> detail;
 
     // Total de la venta
     @Null
     @Positive
     private BigDecimal total;
 
-    private LocalDateTime fechaCreacion;
-    private LocalDateTime fechaActualizacion;
+    private LocalDateTime creationDate;
+    private LocalDateTime updateDate;
 }

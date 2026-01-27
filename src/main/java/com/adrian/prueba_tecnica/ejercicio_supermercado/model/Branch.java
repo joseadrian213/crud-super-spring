@@ -30,7 +30,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 @Entity
-public class Sucursal {
+public class Branch {
     /**
      * Identificador único de la sucursal.
      * Se genera automáticamente usando la estrategia de identidad.
@@ -45,7 +45,7 @@ public class Sucursal {
      * Máximo 150 caracteres. No puede ser nulo.
      */
     @Column(nullable = false, length = 150)
-    private String nombre;
+    private String name;
 
     /**
      * Dirección física de la sucursal.
@@ -53,48 +53,48 @@ public class Sucursal {
      * Máximo 200 caracteres. No puede ser nulo.
      */
     @Column(nullable = false, length = 200)
-    private String direccion;
+    private String address;
 
     /**
      * Indica si la sucursal está activa en el sistema.
      * Una sucursal inactiva no puede registrar nuevas ventas.
      */
     @Column(nullable = false)
-    private boolean activo;
+    private boolean active;
 
     /**
      * Fecha y hora en la que se creó el registro de la sucursal.
      * Se asigna automáticamente mediante {@link #prePersist()} y no puede ser actualizada.
      */
-    @Column(name = "fecha_creacion", updatable = false)
-    private LocalDateTime fechaCreacion;
+    @Column(name = "creation_date", updatable = false)
+    private LocalDateTime creationDate;
 
     /**
      * Fecha y hora de la última actualización del registro de la sucursal.
      * Se actualiza automáticamente mediante {@link #preUpdate()}.
      */
-    @Column(name = "fecha_actualizacion")
-    private LocalDateTime fechaActualizacion;
+    @Column(name = "update_date")
+    private LocalDateTime updateDate;
 
     /**
      * Método de ciclo de vida que se ejecuta antes de persistir la entidad.
-     * Asigna la fecha y hora actual a {@code fechaCreacion} si no está establecida,
-     * y actualiza {@code fechaActualizacion} con la fecha y hora actual.
+     * Asigna la fecha y hora actual a {@code creationDate} si no está establecida,
+     * y actualiza {@code updateDate} con la fecha y hora actual.
      */
     @PrePersist
     protected void prePersist() {
-        if (this.fechaCreacion == null) {
-            fechaCreacion = LocalDateTime.now();
+        if (this.creationDate == null) {
+            creationDate = LocalDateTime.now();
         }
-        fechaActualizacion = LocalDateTime.now();
+        updateDate = LocalDateTime.now();
     }
 
     /**
      * Método de ciclo de vida que se ejecuta antes de actualizar la entidad.
-     * Actualiza {@code fechaActualizacion} con la fecha y hora actual.
+     * Actualiza {@code updateDate} con la fecha y hora actual.
      */
     @PreUpdate
     protected void preUpdate() {
-        fechaActualizacion = LocalDateTime.now();
+        updateDate = LocalDateTime.now();
     }
 }

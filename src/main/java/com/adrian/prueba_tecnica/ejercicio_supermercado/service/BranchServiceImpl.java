@@ -5,19 +5,19 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.adrian.prueba_tecnica.ejercicio_supermercado.dto.request.sucursal.SucursalRequestDTO;
-import com.adrian.prueba_tecnica.ejercicio_supermercado.dto.response.sucursal.SucursalResponseDTO;
+import com.adrian.prueba_tecnica.ejercicio_supermercado.dto.request.sucursal.BranchRequestDTO;
+import com.adrian.prueba_tecnica.ejercicio_supermercado.dto.response.sucursal.BranchResponseDTO;
 import com.adrian.prueba_tecnica.ejercicio_supermercado.exception.NotFoundException;
 import com.adrian.prueba_tecnica.ejercicio_supermercado.mapper.Mapper;
-import com.adrian.prueba_tecnica.ejercicio_supermercado.model.Sucursal;
-import com.adrian.prueba_tecnica.ejercicio_supermercado.repository.SucursalRepository;
+import com.adrian.prueba_tecnica.ejercicio_supermercado.model.Branch;
+import com.adrian.prueba_tecnica.ejercicio_supermercado.repository.BranchRepository;
 
 /**
  * Implementación del servicio de gestión de sucursales.
  * 
  * Esta clase proporciona la lógica de negocio para operaciones CRUD sobre sucursales,
  * incluyendo validaciones, búsqueda, creación, actualización y eliminación (lógica).
- * Implementa la interfaz {@link ISucursalService}.
+ * Implementa la interfaz {@link IBranchService}.
  * 
  * Características:
  * - Obtención de lista de sucursales activas
@@ -28,23 +28,23 @@ import com.adrian.prueba_tecnica.ejercicio_supermercado.repository.SucursalRepos
  * 
  * @author Adrian
  * @version 1.0
- * @see ISucursalService
- * @see Sucursal
+ * @see IBranchService
+ * @see Branch
  */
 @Service
-public class SucursalServiceImpl implements ISucursalService {
+public class BranchServiceImpl implements IBranchService {
     /**
      * Repositorio para acceder a la información de sucursales en la base de datos.
      */
-    private SucursalRepository repository;
+    private BranchRepository repository;
 
     /**
      * Constructor que inyecta el repositorio de sucursales.
      * 
-     * @param sucursalRepository repositorio para acceder a datos de sucursales
+     * @param branchRepository repositorio para acceder a datos de sucursales
      */
-    public SucursalServiceImpl(SucursalRepository sucursalRepository) {
-        this.repository = sucursalRepository;
+    public BranchServiceImpl(BranchRepository branchRepository) {
+        this.repository = branchRepository;
     }
 
     /**
@@ -53,11 +53,11 @@ public class SucursalServiceImpl implements ISucursalService {
      * Este método busca todas las sucursales en la base de datos y las convierte
      * a objetos DTO para su devolución. Solo realiza lectura (readOnly).
      * 
-     * @return lista de {@link SucursalResponseDTO} con información de todas las sucursales
+     * @return lista de {@link BranchResponseDTO} con información de todas las sucursales
      */
     @Override
     @Transactional(readOnly = true)
-    public List<SucursalResponseDTO> traerSucursales() {
+    public List<BranchResponseDTO> findAllBranches() {
         return repository.findAll().stream().map(Mapper::toDTO).toList();
 
     }
@@ -66,12 +66,12 @@ public class SucursalServiceImpl implements ISucursalService {
      * Obtiene una sucursal específica por su identificador.
      * 
      * @param id identificador único de la sucursal a buscar
-     * @return {@link SucursalResponseDTO} con la información de la sucursal
+     * @return {@link BranchResponseDTO} con la información de la sucursal
      * @throws NotFoundException si la sucursal no existe en la base de datos
      */
     @Override
     @Transactional(readOnly = true)
-    public SucursalResponseDTO geSucursalDTO(Long id) {
+    public BranchResponseDTO findByIdBranch(Long id) {
         return repository.findById(id).map(Mapper::toDTO)
                 .orElseThrow(() -> new NotFoundException("Sucursal no encontrada"));
     }
@@ -84,30 +84,30 @@ public class SucursalServiceImpl implements ISucursalService {
      * - El nombre sea obligatorio y no esté en blanco
      * - La dirección sea obligatoria y no esté en blanco
      * 
-     * @param sucursalRequestDTO objeto con los datos de la sucursal a crear
-     * @return {@link SucursalResponseDTO} con los datos de la sucursal creada
+     * @param branchRequestDTO objeto con los datos de la sucursal a crear
+     * @return {@link BranchResponseDTO} con los datos de la sucursal creada
      * @throws IllegalArgumentException si alguna validación falla
      * 
-     * @see SucursalRequestDTO
+     * @see BranchRequestDTO
      */
     @Override
     @Transactional
-    public SucursalResponseDTO crearSucursal(SucursalRequestDTO sucursalRequestDTO) {
-        if (sucursalRequestDTO == null)
-            throw new IllegalArgumentException("SucursalRequestDTO es null");
+    public BranchResponseDTO createBranch(BranchRequestDTO branchRequestDTO) {
+        if (branchRequestDTO == null)
+            throw new IllegalArgumentException("branchRequestDTO es null");
 
-        if (sucursalRequestDTO.getNombre() == null || sucursalRequestDTO.getNombre().isBlank())
+        if (branchRequestDTO.getName() == null || branchRequestDTO.getName().isBlank())
             throw new IllegalArgumentException("El nombre es obligatorio");
 
-        if (sucursalRequestDTO.getDireccion() == null || sucursalRequestDTO.getDireccion().isBlank())
+        if (branchRequestDTO.getAddress() == null || branchRequestDTO.getAddress().isBlank())
             throw new IllegalArgumentException("La direccion es obligatoria");
 
-        Sucursal sucursal = Sucursal.builder()
-                .nombre(sucursalRequestDTO.getNombre())
-                .direccion(sucursalRequestDTO.getDireccion())
-                .activo(sucursalRequestDTO.getActivo())
+        Branch branch = Branch.builder()
+                .name(branchRequestDTO.getName())
+                .address(branchRequestDTO.getAddress())
+                .active(branchRequestDTO.getActive())
                 .build();
-        return Mapper.toDTO(repository.save(sucursal));
+        return Mapper.toDTO(repository.save(branch));
     }
 
     /**
@@ -117,28 +117,28 @@ public class SucursalServiceImpl implements ISucursalService {
      * Si un campo es nulo, no se modifica.
      * 
      * @param id identificador único de la sucursal a actualizar
-     * @param sucursalRequestDTO objeto con los datos de la sucursal a actualizar
-     * @return {@link SucursalResponseDTO} con los datos de la sucursal actualizada
+     * @param branchRequestDTO objeto con los datos de la sucursal a actualizar
+     * @return {@link BranchResponseDTO} con los datos de la sucursal actualizada
      * @throws NotFoundException si la sucursal no existe en la base de datos
      * 
-     * @see SucursalRequestDTO
+     * @see BranchRequestDTO
      */
     @Override
     @Transactional
-    public SucursalResponseDTO actualizarSucursal(Long id, SucursalRequestDTO sucursalRequestDTO) {
-        Sucursal sucursal = repository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Sucursal no encontrada"));
+    public BranchResponseDTO updateBranch(Long id, BranchRequestDTO branchRequestDTO) {
+        Branch branch = repository.findById(id)
+                .orElseThrow(() -> new NotFoundException("branch no encontrada"));
 
-        if (sucursalRequestDTO.getNombre() != null)
-            sucursal.setNombre(sucursalRequestDTO.getNombre());
+        if (branchRequestDTO.getName() != null)
+            branch.setName(branchRequestDTO.getName());
 
-        if (sucursalRequestDTO.getDireccion() != null)
-            sucursal.setDireccion(sucursalRequestDTO.getDireccion());
+        if (branchRequestDTO.getAddress() != null)
+            branch.setAddress(branchRequestDTO.getAddress());
 
-        if (sucursalRequestDTO.getActivo() != null)
-            sucursal.setActivo(sucursalRequestDTO.getActivo());
+        if (branchRequestDTO.getActive() != null)
+            branch.setActive(branchRequestDTO.getActive());
         
-        return Mapper.toDTO(repository.save(sucursal));
+        return Mapper.toDTO(repository.save(branch));
     }
 
     /**
@@ -152,12 +152,12 @@ public class SucursalServiceImpl implements ISucursalService {
      */
     @Override
     @Transactional
-    public void eliminarSucursal(Long id) {
+    public void deleteBranch(Long id) {
 
-        Sucursal sucursal = repository.findById(id)
-                .orElseThrow(() -> new NotFoundException("sucursal no encontrada"));
-        sucursal.setActivo(false);
-        repository.save(sucursal);
+        Branch branch = repository.findById(id)
+                .orElseThrow(() -> new NotFoundException("branch no encontrada"));
+        branch.setActive(false);
+        repository.save(branch);
 
     }
 

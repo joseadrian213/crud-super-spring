@@ -17,12 +17,12 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 @ToString
-public class DetalleVentaRequestDTO {  
+public class SaleDetailRequestDTO {  
     @NotNull
     @Positive
-    private Integer cantProd;
+    private Integer ProductQuantity;
    
     @NotNull
-    private Long idProducto;
+    private Long idProduct;
 
 }

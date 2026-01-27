@@ -1,6 +1,6 @@
 package com.adrian.prueba_tecnica.ejercicio_supermercado.dto.request.venta;
 
-import java.time.LocalDate;
+import java.util.List;
 
 import com.adrian.prueba_tecnica.ejercicio_supermercado.enums.EstadoVentaEnum;
 
@@ -18,9 +18,18 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 @ToString
-public class VentaUpdateRequestDTO {
-   @NotNull
-    private LocalDate fecha;
+public class SaleRequestDTO {
+
     @NotNull
-    private EstadoVentaEnum estado;
+    private EstadoVentaEnum status;
+
+    // Datos de la sucursal
+    @NotNull
+    private Long idBranch;
+
+    // lista de detalles de la venta
+    @NotNull
+    private List<SaleDetailRequestDTO> detail;
+
+   
 }

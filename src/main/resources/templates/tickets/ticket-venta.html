@@ -25,8 +25,8 @@
 <body>
     <div class="header">
         <h2>TICKET DE VENTA</h2>
-        <p th:text="${#temporals.format(venta.fechaCreacion, 'EEEE, dd MMMM yyyy HH:mm')}"></p>
-        <p>ID Venta: <span th:text="${venta.id}">001</span></p>
+        <p th:text="${#temporals.format(sale.creationDate, 'EEEE, dd MMMM yyyy HH:mm')}"></p>
+        <p>ID Venta: <span th:text="${sale.id}">001</span></p>
     </div>
 
     <div class="linea"></div>
@@ -40,9 +40,9 @@
             </tr>
         </thead>
         <tbody>
-            <tr th:each="det : ${venta.detalle}">
-                <td th:text="${det.cantProd}">1</td>
-                <td th:text="${det.nombreProd}">Producto</td>
+            <tr th:each="det : ${sale.detail}">
+                <td th:text="${det.productQuantity}">1</td>
+                <td th:text="${det.productName}">Producto</td>
                 <td class="text-right" th:text="${#numbers.formatCurrency(det.subtotal)}">$0.00</td>
             </tr>
         </tbody>
@@ -52,7 +52,7 @@
 
     <div class="text-right">
         <strong>TOTAL: </strong>
-        <span th:text="${#numbers.formatCurrency(venta.total)}">$0.00</span>
+        <span th:text="${#numbers.formatCurrency(sale.total)}">$0.00</span>
     </div>
 
     <div style="margin-top: 15px; text-align: center;">

@@ -34,42 +34,42 @@ import jakarta.servlet.http.HttpServletResponse;
  * Extiende {@link UsernamePasswordAuthenticationFilter} para interceptar peticiones de login
  * y generar tokens JWT (JSON Web Tokens) cuando la autenticación es exitosa.
  * 
- * <p><strong>Flujo de funcionamiento:</strong></p>
- * <ol>
- *   <li>Usuario envía credenciales (username, password) al endpoint de login
- *   <li>Se invoca {@link #attemptAuthentication(HttpServletRequest, HttpServletResponse)}
- *   <li>Se validan las credenciales contra la base de datos mediante {@link AuthenticationManager}
- *   <li>Si la validación es correcta:
- *       <ul>
- *         <li>Se invoca {@link #successfulAuthentication(HttpServletRequest, HttpServletResponse, FilterChain, Authentication)}
- *         <li>Se genera un token JWT con username, roles y fecha de expiración
- *         <li>El token se devuelve en el encabezado Authorization y en el cuerpo JSON
- *       </ul>
- *   <li>Si la validación falla:
- *       <ul>
- *         <li>Se invoca {@link #unsuccessfulAuthentication(HttpServletRequest, HttpServletResponse, AuthenticationException)}
- *         <li>Se retorna un error 401 (Unauthorized) con descripción del problema
- *       </ul>
- * </ol>
+ * Flujo de funcionamiento:
  * 
- * <p><strong>Token JWT:</strong></p>
+ *   Usuario envía credenciales (username, password) al endpoint de login
+ *   Se invoca {@link #attemptAuthentication(HttpServletRequest, HttpServletResponse)}
+ *   Se validan las credenciales contra la base de datos mediante {@link AuthenticationManager}
+ *   Si la validación es correcta:
+ *       
+ *         Se invoca {@link #successfulAuthentication(HttpServletRequest, HttpServletResponse, FilterChain, Authentication)}
+ *         Se genera un token JWT con username, roles y fecha de expiración
+ *         El token se devuelve en el encabezado Authorization y en el cuerpo JSON
+ *       
+ *   Si la validación falla:
+ *       
+ *         Se invoca {@link #unsuccessfulAuthentication(HttpServletRequest, HttpServletResponse, AuthenticationException)}
+ *         Se retorna un error 401 (Unauthorized) con descripción del problema
+ *       
+ * 
+ * 
+ * Token JWT:
  * El token incluye los siguientes claims:
- * <ul>
- *   <li><strong>subject:</strong> username del usuario autenticado
- *   <li><strong>authorities:</strong> lista de roles/permisos en formato JSON
- *   <li><strong>usename:</strong> username repetido en claims (nota: contiene typo)
- *   <li><strong>expiration:</strong> timestamp de expiración (1 hora desde emisión)
- *   <li><strong>issuedAt:</strong> timestamp de emisión del token
- * </ul>
  * 
- * <p><strong>Configuración de seguridad:</strong></p>
+ *   subject: username del usuario autenticado
+ *   authorities: lista de roles/permisos en formato JSON
+ *   usename: username repetido en claims (nota: contiene typo)
+ *   expiration: timestamp de expiración (1 hora desde emisión)
+ *   issuedAt: timestamp de emisión del token
+ * 
+ * 
+ * Configuración de seguridad:
  * La clase utiliza configuración desde {@link TokenJwtConfig} para:
- * <ul>
- *   <li>SECRET_KEY: Clave secreta para firmar y validar tokens
- *   <li>HEADER_AUTHORIZATION: Nombre del encabezado HTTP (Authorization)
- *   <li>PREFIX_TOKEN: Prefijo del token en el encabezado (Bearer)
- *   <li>CONTENT_TYPE: Tipo de contenido de respuesta (application/json)
- * </ul>
+ * 
+ *   SECRET_KEY: Clave secreta para firmar y validar tokens
+ *   HEADER_AUTHORIZATION: Nombre del encabezado HTTP (Authorization)
+ *   PREFIX_TOKEN: Prefijo del token en el encabezado (Bearer)
+ *   CONTENT_TYPE: Tipo de contenido de respuesta (application/json)
+ * 
  * 
  * @author Adrian
  * @version 1.0
@@ -106,15 +106,15 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
      * Este método se invoca automáticamente cuando se recibe una solicitud POST al endpoint
      * de login (configurado en la cadena de filtros de seguridad).
      * 
-     * <p><strong>Proceso:</strong></p>
-     * <ol>
-     *   <li>Lee el cuerpo de la petición como JSON
-     *   <li>Extrae username y password de la entidad User
-     *   <li>Crea un token de autenticación sin roles (serán añadidos después)
-     *   <li>Delega la validación al AuthenticationManager
-     * </ol>
+     * Proceso:
      * 
-     * <p><strong>Manejo de excepciones:</strong></p>
+     *   Lee el cuerpo de la petición como JSON
+     *   Extrae username y password de la entidad User
+     *   Crea un token de autenticación sin roles (serán añadidos después)
+     *   Delega la validación al AuthenticationManager
+     * 
+     * 
+     * Manejo de excepciones:
      * Las excepciones de lectura JSON se capturan e imprimen en stack trace,
      * pero no interrumpen el flujo (comportamiento actual).
      * 
@@ -160,20 +160,20 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
      * Genera un token JWT con los datos del usuario y lo devuelve en la respuesta HTTP,
      * tanto en los encabezados como en el cuerpo JSON.
      * 
-     * <p><strong>Proceso:</strong></p>
-     * <ol>
-     *   <li>Extrae el usuario y sus roles del objeto Authentication
-     *   <li>Crea un Claims con username y roles serializados a JSON
-     *   <li>Construye el token JWT con:
-     *       <ul>
-     *         <li>Subject: username del usuario
-     *         <li>Claims: roles y datos adicionales
-     *         <li>Expiración: 1 hora desde la emisión (3600000 ms)
-     *         <li>Firma: se firma con la clave secreta configurada
-     *       </ul>
-     *   <li>Devuelve el token en encabezado Authorization con prefijo Bearer
-     *   <li>Devuelve también un JSON con token, username y mensaje de éxito
-     * </ol>
+     * Proceso:
+     * 
+     *   Extrae el usuario y sus roles del objeto Authentication
+     *   Crea un Claims con username y roles serializados a JSON
+     *   Construye el token JWT con:
+     *       
+     *         Subject: username del usuario
+     *         Claims: roles y datos adicionales
+     *         Expiración: 1 hora desde la emisión (3600000 ms)
+     *         Firma: se firma con la clave secreta configurada
+     *       
+     *   Devuelve el token en encabezado Authorization con prefijo Bearer
+     *   Devuelve también un JSON con token, username y mensaje de éxito
+     * 
      * 
      * @param request la petición HTTP original
      * @param response la respuesta HTTP donde se añadirán encabezados y contenido
@@ -228,20 +228,20 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
      * Devuelve una respuesta HTTP 401 (Unauthorized) con un mensaje de error en JSON
      * que describe el motivo del fallo de autenticación.
      * 
-     * <p><strong>Posibles causas de fallo:</strong></p>
-     * <ul>
-     *   <li>Username no existe en la base de datos
-     *   <li>Password incorrecto para el usuario
-     *   <li>Usuario deshabilitado (enabled=false)
-     * </ul>
+     * Posibles causas de fallo:
      * 
-     * <p><strong>Respuesta devuelta:</strong></p>
+     *   Username no existe en la base de datos
+     *   Password incorrecto para el usuario
+     *   Usuario deshabilitado (enabled=false)
+     * 
+     * 
+     * Respuesta devuelta:
      * JSON con campos:
-     * <ul>
-     *   <li><strong>message:</strong> "Error en la autenticacion username o password incorrecto"
-     *   <li><strong>error:</strong> mensaje de excepción detallado
-     *   <li><strong>HTTP Status:</strong> 401 Unauthorized
-     * </ul>
+     * 
+     *   message: "Error en la autenticacion username o password incorrecto"
+     *   error: mensaje de excepción detallado
+     *   HTTP Status: 401 Unauthorized
+     * 
      * 
      * @param request la petición HTTP original
      * @param response la respuesta HTTP donde se envía el error
