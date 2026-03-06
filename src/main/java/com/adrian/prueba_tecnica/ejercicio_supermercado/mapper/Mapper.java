@@ -216,8 +216,8 @@ public class Mapper {
                 .admin(user.getAdmin())
                 .roles(role)
                 .enabled(user.getEnabled())
-                .fechaCreacion(user.getCreationDate())
-                .fechaActualizacion(user.getUpdateDate())
+                .creationDate(user.getCreationDate())
+                .UpdateDate(user.getUpdateDate())
                 .build();
     }
 }

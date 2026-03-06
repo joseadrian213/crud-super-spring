@@ -26,6 +26,6 @@ public class UserResponseDTO {
     @NotNull
     private List<RoleResponseDTO> roles;
     private Boolean enabled;
-    private LocalDateTime fechaCreacion;
-    private LocalDateTime fechaActualizacion;
+    private LocalDateTime creationDate;
+    private LocalDateTime UpdateDate;
 }
